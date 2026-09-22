@@ -40,7 +40,7 @@
 ### 1. 取得原始碼
 
 ```bash
-git clone <REPO_URL> ticketing
+git clone git@github.com:Zayn1109/ticketing.git ticketing
 cd ticketing
 ```
 
