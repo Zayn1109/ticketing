@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('event_session_id')->constrained()->restrictOnDelete();
             $table->foreignId('ticket_id')->nullable()->constrained()->restrictOnDelete();
-            $table->foreignId('scanned_by')->contrained('users')->restrictOnDelete();
+            $table->foreignId('scanned_by')->constrained('users')->restrictOnDelete();
 
             $table->string('raw_code');
             $table->enum('result', [
