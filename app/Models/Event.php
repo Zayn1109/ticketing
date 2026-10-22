@@ -6,6 +6,7 @@ use App\Enums\EventStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -41,6 +42,14 @@ class Event extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * @return HasMany<EventSession, $this>
+     */
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(EventSession::class);
     }
 
     /**
