@@ -15,6 +15,7 @@
 | [0001](0001-no-venues-table.md) | 場地資訊不獨立成表 | 已採納 |
 | [0002](0002-no-check-ins-table.md) | 核銷不另建表，記在票券上 | 已採納 |
 | [0003](0003-no-refunds-table.md) | 本期不建退款表，以 `refund_required` 狀態留出口 | 已採納 |
+| [0004](0004-organizer-roles-are-permission-levels.md) | 主辦方角色是權限等級，採固定三級 | 已採納 |
 
 ## 範本
 
