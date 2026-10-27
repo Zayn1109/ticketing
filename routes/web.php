@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Organizer\EventController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'Welcome')->name('home');
@@ -7,5 +8,12 @@ Route::inertia('/', 'Welcome')->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
 });
+
+Route::middleware(['auth', 'verified', 'organizer.member'])
+    ->prefix('organizers/{organizer}')
+    ->name('organizers.')
+    ->group(function () {
+        Route::get('events', [EventController::class, 'index'])->name('events.index');
+    });
 
 require __DIR__.'/settings.php';
