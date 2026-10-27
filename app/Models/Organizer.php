@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\OrganizerFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,6 +22,9 @@ use Illuminate\Support\Carbon;
 #[Fillable(['name', 'tax_id', 'contact_email', 'contact_phone'])]
 class Organizer extends Model
 {
+    /** @use HasFactory<OrganizerFactory> */
+    use HasFactory;
+
     /**
      * @return BelongsToMany<User, $this, OrganizerUser>
      */

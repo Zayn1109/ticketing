@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Enums\EventSessionStatus;
+use Database\Factories\EventSessionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -30,6 +32,9 @@ use Illuminate\Support\Carbon;
 #[Fillable(['name', 'venue_name', 'venue_address', 'starts_at', 'ends_at', 'doors_open_at', 'timezone', 'capacity'])]
 class EventSession extends Model
 {
+    /** @use HasFactory<EventSessionFactory> */
+    use HasFactory;
+
     /**
      * @return BelongsTo<Event, $this>
      */

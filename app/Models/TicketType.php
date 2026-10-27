@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\TicketTypeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -22,6 +24,9 @@ use Illuminate\Support\Carbon;
 #[Fillable(['name', 'price', 'quota', 'sale_start_at', 'sale_end_at', 'max_per_user'])]
 class TicketType extends Model
 {
+    /** @use HasFactory<TicketTypeFactory> */
+    use HasFactory;
+
     /**
      * @return BelongsTo<EventSession, $this>
      */
