@@ -14,8 +14,12 @@ Route::middleware(['auth', 'verified', 'organizer.member'])
     ->name('organizers.')
     ->scopeBindings()
     ->group(function () {
-        Route::get('events', [EventController::class, 'index'])->name('events.index');
-        Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');
+        Route::get('events', [EventController::class, 'index'])
+            ->name('events.index')
+            ->can('event.viewAny', 'organizer');
+        Route::get('events/{event}', [EventController::class, 'show'])
+            ->name('events.show')
+            ->can('event.viewAny', 'organizer');
     });
 
 require __DIR__.'/settings.php';
