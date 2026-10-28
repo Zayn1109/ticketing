@@ -55,4 +55,32 @@ class TenantIsolationTest extends TestCase
             ->get(route('organizers.events.show', [$this->organizerB, $this->eventA]))
             ->assertNotFound();
     }
+
+    public function test_own_member_can_view_events_index(): void
+    {
+        $scanner = User::factory()->create();
+        $this->organizerA->members()->attach($scanner, ['role' => OrganizerRole::Scanner, 'joined_at' => now()]);
+
+        $this->actingAs($scanner)
+            ->get(route('organizers.events.index', $this->organizerA))
+            ->assertOk()
+            ->assertJsonFragment(['id' => $this->eventA->id]);
+    }
+
+    public function test_own_member_can_view_events_show(): void
+    {
+        $scanner = User::factory()->create();
+        $this->organizerA->members()->attach($scanner, ['role' => OrganizerRole::Scanner, 'joined_at' => now()]);
+
+        $this->actingAs($scanner)
+            ->get(route('organizers.events.show', [$this->organizerA, $this->eventA]))
+            ->assertOk()
+            ->assertJsonPath('id', $this->eventA->id);
+    }
+
+    public function test_guest_is_redirected_to_login(): void
+    {
+        $this->get(route('organizers.events.index', $this->organizerA))
+            ->assertRedirect(route('login'));
+    }
 }
