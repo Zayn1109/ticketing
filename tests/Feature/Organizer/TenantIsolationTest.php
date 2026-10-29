@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Organizer;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class TenantIsolationTest extends TestCase
@@ -75,7 +76,10 @@ class TenantIsolationTest extends TestCase
         $this->actingAs($scanner)
             ->get(route('organizers.events.show', [$this->organizerA, $this->eventA]))
             ->assertOk()
-            ->assertJsonPath('id', $this->eventA->id);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('organizer/events/Show')
+                ->where('event.id', $this->eventA->id)
+            );
     }
 
     public function test_guest_is_redirected_to_login(): void
