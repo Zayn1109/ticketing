@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { Badge } from '@/components/ui/badge';
 import {
     Card,
@@ -8,8 +8,9 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-
-type EventStatus = 'draft' | 'published' | 'cancelled';
+import { eventStatusLabels, eventStatusVariants } from '@/lib/eventStatus';
+import type { EventStatus } from '@/lib/eventStatus';
+import { index } from '@/routes/organizers/events';
 
 type TicketType = {
     id: number;
@@ -44,21 +45,6 @@ const props = defineProps<{
     };
 }>();
 
-const statusLabels: Record<EventStatus, string> = {
-    draft: '草稿',
-    published: '已發布',
-    cancelled: '已取消',
-};
-
-const statusVariants: Record<
-    EventStatus,
-    'secondary' | 'default' | 'destructive'
-> = {
-    draft: 'secondary',
-    published: 'default',
-    cancelled: 'destructive',
-};
-
 const formatDateTime = (iso: string, timeZone: string) =>
     new Intl.DateTimeFormat('zh-TW', {
         dateStyle: 'medium',
@@ -79,13 +65,16 @@ const formatPrice = (price: number) =>
 
     <div class="flex flex-col gap-6 p-4">
         <header class="flex flex-col gap-2">
-            <p class="text-sm text-muted-foreground">
-                {{ props.organizer.name }}
-            </p>
+            <Link
+                :href="index(props.organizer)"
+                class="text-sm text-muted-foreground hover:underline"
+            >
+                ← {{ props.organizer.name }} 的活動
+            </Link>
             <div class="flex items-center gap-3">
                 <h1 class="text-2xl font-semibold">{{ props.event.name }}</h1>
-                <Badge :variant="statusVariants[props.event.status]">
-                    {{ statusLabels[props.event.status] }}
+                <Badge :variant="eventStatusVariants[props.event.status]">
+                    {{ eventStatusLabels[props.event.status] }}
                 </Badge>
             </div>
             <p
