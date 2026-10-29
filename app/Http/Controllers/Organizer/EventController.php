@@ -7,17 +7,27 @@ use App\Models\Event;
 use App\Models\EventSession;
 use App\Models\Organizer;
 use App\Models\TicketType;
-use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class EventController extends Controller
 {
-    public function index(Organizer $organizer): JsonResponse
+    public function index(Organizer $organizer): Response
     {
-        return response()->json(
-            $organizer->events()->get(['id', 'name', 'status'])
-        );
+        $events = $organizer->events()
+            ->withCount('sessions')
+            ->latest()
+            ->get();
+
+        return Inertia::render('organizer/events/Index', [
+            'organizer' => $organizer->only(['id', 'name']),
+            'events' => $events->map(fn (Event $event) => [
+                'id' => $event->id,
+                'name' => $event->name,
+                'status' => $event->status,
+                'sessions_count' => $event->sessions_count,
+            ]),
+        ]);
     }
 
     public function show(Organizer $organizer, Event $event): Response

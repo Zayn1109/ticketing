@@ -65,7 +65,10 @@ class TenantIsolationTest extends TestCase
         $this->actingAs($scanner)
             ->get(route('organizers.events.index', $this->organizerA))
             ->assertOk()
-            ->assertJsonFragment(['id' => $this->eventA->id]);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('organizer/events/Index')
+                ->where('events.0.id', $this->eventA->id)
+            );
     }
 
     public function test_own_member_can_view_events_show(): void

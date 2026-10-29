@@ -26,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $last_session_ends_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read int $sessions_count
  */
 #[Fillable(['name', 'description'])]
 class Event extends Model
