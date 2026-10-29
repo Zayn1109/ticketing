@@ -66,7 +66,7 @@ class Event extends Model
             'status' => EventStatus::class,
             'published_at' => 'datetime',
             'cancelled_at' => 'datetime',
-            'lase_session_ends_at' => 'datetime',
+            'last_session_ends_at' => 'datetime',
         ];
     }
 }
