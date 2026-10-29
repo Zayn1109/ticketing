@@ -14,7 +14,7 @@ class PermissionMatrixTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * 對照 docs/permission.md，故意不讓 AuthServiceProvider，讓測試成為獨立的規格
+     * 對照 docs/permissions.md，故意不讀 AuthServiceProvider，讓測試成為獨立的規格
      *
      * @return array<string, array{string, bool, bool, bool}>
      */
@@ -34,6 +34,16 @@ class PermissionMatrixTest extends TestCase
             'ticket.checkIn' => ['ticket.checkIn', true, true, true],
             'scanLog.viewAny' => ['scanLog.viewAny', true, true, false],
         ];
+    }
+
+    /**
+     * 只需要 ability 名稱的測試用這個，避免帶入用不到的角色欄位
+     *
+     * @return array<string, array{string}>
+     */
+    public static function abilities(): array
+    {
+        return array_map(fn (array $row) => [$row[0]], self::matrix());
     }
 
     #[DataProvider('matrix')]
@@ -57,7 +67,7 @@ class PermissionMatrixTest extends TestCase
         }
     }
 
-    #[DataProvider('matrix')]
+    #[DataProvider('abilities')]
     public function test_non_member_has_no_permission(string $ability): void
     {
         $user = User::factory()->create();
@@ -66,7 +76,7 @@ class PermissionMatrixTest extends TestCase
         $this->assertFalse($user->can($ability, $organizer));
     }
 
-    #[DataProvider('matrix')]
+    #[DataProvider('abilities')]
     public function test_role_does_not_carry_over_to_other_organizer(string $ability): void
     {
         $user = User::factory()->create();
