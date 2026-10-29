@@ -4,6 +4,7 @@ import { BookOpen, FolderGit2, LayoutGrid } from '@lucide/vue';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
+import NavOrganizers from '@/components/NavOrganizers.vue';
 import NavUser from '@/components/NavUser.vue';
 import {
     Sidebar,
@@ -55,6 +56,7 @@ const footerNavItems: NavItem[] = [
 
         <SidebarContent>
             <NavMain :items="mainNavItems" />
+            <NavOrganizers />
         </SidebarContent>
 
         <SidebarFooter>

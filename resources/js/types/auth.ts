@@ -19,3 +19,11 @@ export type TwoFactorConfigContent = {
     description: string;
     buttonText: string;
 };
+
+export type OrganizerRole = 'owner' | 'admin' | 'scanner';
+
+export type OrganizerMembership = {
+    id: number;
+    name: string;
+    role: OrganizerRole;
+};
