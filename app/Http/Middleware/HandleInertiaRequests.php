@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\OrganizerUser;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -41,6 +42,17 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'organizers' => fn () => $request->user()
+                ?->organizerMemberships()
+                ->with('organizer')
+                ->orderBy('organizer_id')
+                ->get()
+                ->map(fn (OrganizerUser $membership) => [
+                    'id' => $membership->organizer->id,
+                    'name' => $membership->organizer->name,
+                    'role' => $membership->role,
+                ])
+                ?? [],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

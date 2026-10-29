@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -43,6 +44,16 @@ class User extends Authenticatable implements MustVerifyEmail
             ->using(OrganizerUser::class)
             ->withPivot(['id', 'role', 'invited_by', 'joined_at'])
             ->withTimestamps();
+    }
+
+    /**
+     * 從中介表這一邊查詢，型別才能完整保留角色（多對多的 get() 會遺失 pivot 型別）
+     *
+     * @return HasMany<OrganizerUser, $this>
+     */
+    public function organizerMemberships(): HasMany
+    {
+        return $this->hasMany(OrganizerUser::class);
     }
 
     public function roleIn(Organizer $organizer): ?OrganizerRole

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OrganizerRole;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Carbon;
 
@@ -22,6 +23,14 @@ class OrganizerUser extends Pivot
 
     // 中介表有自己的 id 主鍵，Pivot 預設不是自增
     public $incrementing = true;
+
+    /**
+     * @return BelongsTo<Organizer, $this>
+     */
+    public function organizer(): BelongsTo
+    {
+        return $this->belongsTo(Organizer::class);
+    }
 
     /**
      * @return array<string, string>
