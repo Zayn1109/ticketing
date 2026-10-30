@@ -9,6 +9,7 @@ use App\Models\Organizer;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class EventIndexTest extends TestCase
@@ -41,6 +42,31 @@ class EventIndexTest extends TestCase
                 ->where('events.1.sessions_count', 0)
                 ->missing('events.0.created_by')
                 ->missing('events.0.description')
+            );
+    }
+
+    /**
+     * @return array<string, array{OrganizerRole, bool}>
+     */
+    public static function manageByRole(): array
+    {
+        return [
+            'owner 可以管理' => [OrganizerRole::Owner, true],
+            'admin 可以管理' => [OrganizerRole::Admin, true],
+            'scanner 不能管理' => [OrganizerRole::Scanner, false],
+        ];
+    }
+
+    #[DataProvider('manageByRole')]
+    public function test_index_tells_frontend_whether_user_can_manage_events(OrganizerRole $role, bool $canManage): void
+    {
+        $user = User::factory()->create();
+        $organizer = Organizer::factory()->withMember($user, $role)->create();
+
+        $this->actingAs($user)
+            ->get(route('organizers.events.index', $organizer))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('can.manage', $canManage)
             );
     }
 }

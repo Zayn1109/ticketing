@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Organizer;
 
+use App\Enums\EventStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Organizer\StoreEventRequest;
 use App\Models\Event;
 use App\Models\EventSession;
 use App\Models\Organizer;
 use App\Models\TicketType;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,6 +25,9 @@ class EventController extends Controller
 
         return Inertia::render('organizer/events/Index', [
             'organizer' => $organizer->only(['id', 'name']),
+            'can' => [
+                'manage' => Gate::allows('event.manage', $organizer),
+            ],
             'events' => $events->map(fn (Event $event) => [
                 'id' => $event->id,
                 'name' => $event->name,
@@ -28,6 +35,25 @@ class EventController extends Controller
                 'sessions_count' => $event->sessions_count,
             ]),
         ]);
+    }
+
+    public function create(Organizer $organizer): Response
+    {
+        return Inertia::render('organizer/events/Create', [
+            'organizer' => $organizer->only(['id', 'name']),
+        ]);
+    }
+
+    public function store(StoreEventRequest $request, Organizer $organizer): RedirectResponse
+    {
+        $event = $organizer->events()->make($request->validated());
+        $event->status = EventStatus::Draft;
+        $event->created_by = $request->user()->id;
+        $event->save();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => '活動已建立']);
+
+        return to_route('organizers.events.show', [$organizer, $event]);
     }
 
     public function show(Organizer $organizer, Event $event): Response

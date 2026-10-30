@@ -17,6 +17,12 @@ Route::middleware(['auth', 'verified', 'organizer.member'])
         Route::get('events', [EventController::class, 'index'])
             ->name('events.index')
             ->can('event.viewAny', 'organizer');
+        Route::get('events/create', [EventController::class, 'create'])
+            ->name('events.create')
+            ->can('event.manage', 'organizer');
+        Route::post('events', [EventController::class, 'store'])
+            ->name('events.store')
+            ->can('event.manage', 'organizer');
         Route::get('events/{event}', [EventController::class, 'show'])
             ->name('events.show')
             ->can('event.viewAny', 'organizer');

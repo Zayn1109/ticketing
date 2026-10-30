@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { eventStatusLabels, eventStatusVariants } from '@/lib/eventStatus';
 import type { EventStatus } from '@/lib/eventStatus';
-import { show } from '@/routes/organizers/events';
+import { create, show } from '@/routes/organizers/events';
 
 const props = defineProps<{
     organizer: { id: number; name: string };
+    can: { manage: boolean };
     events: {
         id: number;
         name: string;
@@ -20,11 +22,16 @@ const props = defineProps<{
     <Head :title="`${props.organizer.name} 的活動`" />
 
     <div class="flex flex-col gap-6 p-4">
-        <header class="flex flex-col gap-1">
-            <p class="text-sm text-muted-foreground">
-                {{ props.organizer.name }}
-            </p>
-            <h1 class="text-2xl font-semibold">活動</h1>
+        <header class="flex items-end justify-between gap-4">
+            <div class="flex flex-col gap-1">
+                <p class="text-sm text-muted-foreground">
+                    {{ props.organizer.name }}
+                </p>
+                <h1 class="text-2xl font-semibold">活動</h1>
+            </div>
+            <Button v-if="props.can.manage" as-child>
+                <Link :href="create(props.organizer)">建立活動</Link>
+            </Button>
         </header>
 
         <p
