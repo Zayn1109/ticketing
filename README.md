@@ -10,19 +10,19 @@
 
 ## 技術棧
 
-| 層級 | 技術 | 版本 |
-| --- | --- | --- |
-| 後端框架 | Laravel | 13.x |
-| 語言 | PHP | 8.4 |
-| 前端 | Inertia.js + Vue 3 + TypeScript | Vue 3.5 |
-| 樣式 | Tailwind CSS | 4.x |
-| 資料庫 | MySQL | 8.0 |
-| 快取 / Session | Redis | 7 |
-| 認證 | Laravel Fortify（信箱驗證、2FA、密碼二次確認） | 1.x |
-| 測試 | Pest | 5.x |
-| 靜態分析 | Larastan (PHPStan level 7) | 3.x |
-| 程式碼風格 | Laravel Pint | 1.x |
-| 本機環境 | Docker Compose | — |
+| 層級           | 技術                                           | 版本    |
+| -------------- | ---------------------------------------------- | ------- |
+| 後端框架       | Laravel                                        | 13.x    |
+| 語言           | PHP                                            | 8.4     |
+| 前端           | Inertia.js + Vue 3 + TypeScript                | Vue 3.5 |
+| 樣式           | Tailwind CSS                                   | 4.x     |
+| 資料庫         | MySQL                                          | 8.0     |
+| 快取 / Session | Redis                                          | 7       |
+| 認證           | Laravel Fortify（信箱驗證、2FA、密碼二次確認） | 1.x     |
+| 測試           | Pest                                           | 5.x     |
+| 靜態分析       | Larastan (PHPStan level 7)                     | 3.x     |
+| 程式碼風格     | Laravel Pint                                   | 1.x     |
+| 本機環境       | Docker Compose                                 | —       |
 
 ---
 
@@ -73,15 +73,15 @@ composer run dev
 
 ## 開發常用指令
 
-| 指令 | 用途 |
-| --- | --- |
-| `composer run dev` | 一次啟動 server / queue / logs / vite |
-| `php artisan test` | 執行 Pest 測試 |
-| `composer lint` | 以 Pint 自動修正程式碼風格 |
-| `composer lint:check` | 只檢查風格，不修改（CI 用） |
-| `composer types:check` | 執行 Larastan 靜態分析 |
-| `composer ci:check` | 一次跑完前端檢查、型別檢查與測試 |
-| `php artisan migrate:fresh --seed` | 重建資料庫並填入測試資料 |
+| 指令                               | 用途                                  |
+| ---------------------------------- | ------------------------------------- |
+| `composer run dev`                 | 一次啟動 server / queue / logs / vite |
+| `php artisan test`                 | 執行 Pest 測試                        |
+| `composer lint`                    | 以 Pint 自動修正程式碼風格            |
+| `composer lint:check`              | 只檢查風格，不修改（CI 用）           |
+| `composer types:check`             | 執行 Larastan 靜態分析                |
+| `composer ci:check`                | 一次跑完前端檢查、型別檢查與測試      |
+| `php artisan migrate:fresh --seed` | 重建資料庫並填入測試資料              |
 
 ---
 
@@ -89,22 +89,22 @@ composer run dev
 
 ### 連接埠
 
-| 服務 | 容器內 | 主機對外 |
-| --- | --- | --- |
-| MySQL | 3306 | **3307** |
-| Redis | 6379 | 6379 |
-| 應用程式 | — | 8000 |
+| 服務     | 容器內 | 主機對外 |
+| -------- | ------ | -------- |
+| MySQL    | 3306   | **3307** |
+| Redis    | 6379   | 6379     |
+| 應用程式 | —      | 8000     |
 
 > ⚠️ MySQL 對外使用 **3307** 而非預設的 3306，以避免與開發機上既有的 MySQL 服務衝突。使用 GUI 工具連線時請填 `127.0.0.1:3307`。
 
 ### 資料儲存位置
 
-| 資料 | 儲存於 |
-| --- | --- |
-| 應用程式資料 | MySQL（Docker named volume，容器重建不遺失） |
-| 快取 | Redis db1 |
-| Session | Redis db0 |
-| 佇列 | MySQL `jobs` 資料表（將於後續階段改用 Redis + Horizon） |
+| 資料         | 儲存於                                                  |
+| ------------ | ------------------------------------------------------- |
+| 應用程式資料 | MySQL（Docker named volume，容器重建不遺失）            |
+| 快取         | Redis db1                                               |
+| Session      | Redis db0                                               |
+| 佇列         | MySQL `jobs` 資料表（將於後續階段改用 Redis + Horizon） |
 
 查看 Redis 內容時需指定資料庫編號，例如快取要用 `redis-cli -n 1 KEYS '*'`。
 

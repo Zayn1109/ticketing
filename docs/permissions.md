@@ -5,30 +5,30 @@
 
 ## 角色
 
-| 角色 | 定位 | 典型使用者 |
-|---|---|---|
-| `owner` | 全部權限，包含不可逆與牽涉金流的操作 | 主辦方負責人 |
-| `admin` | 日常營運：活動、票種、訂單、驗票 | 主辦方正職員工 |
-| `scanner` | 只能驗票 | 活動當天的工讀生、志工 |
+| 角色      | 定位                                 | 典型使用者             |
+| --------- | ------------------------------------ | ---------------------- |
+| `owner`   | 全部權限，包含不可逆與牽涉金流的操作 | 主辦方負責人           |
+| `admin`   | 日常營運：活動、票種、訂單、驗票     | 主辦方正職員工         |
+| `scanner` | 只能驗票                             | 活動當天的工讀生、志工 |
 
 權限由上往下包含：`owner ⊇ admin ⊇ scanner`。
 不屬於該主辦方的使用者（包含一般購票者）沒有任何後台權限。
 
 ## 矩陣
 
-| 分類 | 動作 | Ability | owner | admin | scanner |
-|---|---|---|---|---|---|
-| 主辦方 | 編輯主辦方資料 | `organizer.update` | ✅ | ❌ | ❌ |
-| 成員 | 查看成員清單 | `member.viewAny` | ✅ | ✅ | ❌ |
-| | 邀請、移除 scanner | `member.manageScanners` | ✅ | ✅ | ❌ |
-| | 邀請、移除 admin／owner，變更任何人的角色 | `member.manage` | ✅ | ❌ | ❌ |
-| 活動 | 查看活動（含草稿） | `event.viewAny` | ✅ | ✅ | ✅ |
-| | 建立、編輯活動，管理場次與票種 | `event.manage` | ✅ | ✅ | ❌ |
-| | 發布活動（`draft → published`） | `event.publish` | ✅ | ✅ | ❌ |
-| | 取消活動或場次 | `event.cancel` | ✅ | ❌ | ❌ |
-| 訂單 | 查看訂單、購票人資料、銷售報表 | `order.viewAny` | ✅ | ✅ | ❌ |
-| 驗票 | 掃碼核銷 | `ticket.checkIn` | ✅ | ✅ | ✅ |
-| | 查看掃碼紀錄 | `scanLog.viewAny` | ✅ | ✅ | ❌ |
+| 分類   | 動作                                      | Ability                 | owner | admin | scanner |
+| ------ | ----------------------------------------- | ----------------------- | ----- | ----- | ------- |
+| 主辦方 | 編輯主辦方資料                            | `organizer.update`      | ✅    | ❌    | ❌      |
+| 成員   | 查看成員清單                              | `member.viewAny`        | ✅    | ✅    | ❌      |
+|        | 邀請、移除 scanner                        | `member.manageScanners` | ✅    | ✅    | ❌      |
+|        | 邀請、移除 admin／owner，變更任何人的角色 | `member.manage`         | ✅    | ❌    | ❌      |
+| 活動   | 查看活動（含草稿）                        | `event.viewAny`         | ✅    | ✅    | ✅      |
+|        | 建立、編輯活動，管理場次與票種            | `event.manage`          | ✅    | ✅    | ❌      |
+|        | 發布活動（`draft → published`）           | `event.publish`         | ✅    | ✅    | ❌      |
+|        | 取消活動或場次                            | `event.cancel`          | ✅    | ❌    | ❌      |
+| 訂單   | 查看訂單、購票人資料、銷售報表            | `order.viewAny`         | ✅    | ✅    | ❌      |
+| 驗票   | 掃碼核銷                                  | `ticket.checkIn`        | ✅    | ✅    | ✅      |
+|        | 查看掃碼紀錄                              | `scanLog.viewAny`       | ✅    | ✅    | ❌      |
 
 `Ability` 欄是實作時 Gate／Policy 使用的名稱。
 

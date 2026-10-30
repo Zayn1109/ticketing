@@ -109,7 +109,9 @@ const formatPrice = (price: number) =>
                         </Badge>
                     </CardTitle>
                     <CardDescription>
-                        {{ formatDateTime(session.starts_at, session.timezone) }}
+                        {{
+                            formatDateTime(session.starts_at, session.timezone)
+                        }}
                         –
                         {{ formatDateTime(session.ends_at, session.timezone) }}
                         （{{ session.timezone }}）
