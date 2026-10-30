@@ -7,6 +7,8 @@ use App\Models\Event;
 use App\Models\Organizer;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Routing\Route as RoutingRoute;
+use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -89,5 +91,34 @@ class TenantIsolationTest extends TestCase
     {
         $this->get(route('organizers.events.index', $this->organizerA))
             ->assertRedirect(route('login'));
+    }
+
+    public function test_every_organizer_route_returns_404_for_other_tenant_member(): void
+    {
+        $routes = collect(Route::getRoutes()->getRoutes())
+            ->filter(fn (RoutingRoute $route) => str_starts_with((string) $route->getName(), 'organizers.'));
+
+        // 防止路由前綴改名後掃到 0 條，測試卻照樣通過
+        $this->assertNotEmpty($routes);
+
+        // 網址參數 => 屬於主辦方 A 的資料；新增路由參數時要補在這裡
+        $bindings = [
+            'organizer' => $this->organizerA,
+            'event' => $this->eventA,
+        ];
+
+        foreach ($routes as $route) {
+            $parameters = [];
+            foreach ($route->parameterNames() as $name) {
+                $this->assertArrayHasKey($name, $bindings, "路由 {$route->getName()} 的參數 {$name} 沒有測試資料，請補到 \$bindings");
+                $parameters[$name] = $bindings[$name];
+            }
+
+            $method = $route->methods()[0];
+            $response = $this->actingAs($this->memberOfB)
+                ->call($method, route((string) $route->getName(), $parameters));
+
+            $this->assertSame(404, $response->status(), "{$method} /{$route->uri()} 沒有擋下其他租戶的成員");
+        }
     }
 }
