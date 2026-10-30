@@ -41,4 +41,37 @@ class EventShowTest extends TestCase
                 ->missing('event.cancelled_by')
             );
     }
+
+    public function test_show_allows_admin_to_update_editable_event(): void
+    {
+        $admin = User::factory()->create();
+        $organizer = Organizer::factory()->withMember($admin, OrganizerRole::Admin)->create();
+        $event = Event::factory()->for($organizer)->create();
+
+        $this->actingAs($admin)
+            ->get(route('organizers.events.show', [$organizer, $event]))
+            ->assertInertia(fn (Assert $page) => $page->where('can.update', true));
+    }
+
+    public function test_show_denies_update_to_scanner(): void
+    {
+        $scanner = User::factory()->create();
+        $organizer = Organizer::factory()->withMember($scanner, OrganizerRole::Scanner)->create();
+        $event = Event::factory()->for($organizer)->create();
+
+        $this->actingAs($scanner)
+            ->get(route('organizers.events.show', [$organizer, $event]))
+            ->assertInertia(fn (Assert $page) => $page->where('can.update', false));
+    }
+
+    public function test_show_denies_update_of_cancelled_event_even_to_owner(): void
+    {
+        $owner = User::factory()->create();
+        $organizer = Organizer::factory()->withMember($owner, OrganizerRole::Owner)->create();
+        $event = Event::factory()->for($organizer)->cancelled()->create();
+
+        $this->actingAs($owner)
+            ->get(route('organizers.events.show', [$organizer, $event]))
+            ->assertInertia(fn (Assert $page) => $page->where('can.update', false));
+    }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -10,7 +11,7 @@ import {
 } from '@/components/ui/card';
 import { eventStatusLabels, eventStatusVariants } from '@/lib/eventStatus';
 import type { EventStatus } from '@/lib/eventStatus';
-import { index } from '@/routes/organizers/events';
+import { edit, index } from '@/routes/organizers/events';
 
 type TicketType = {
     id: number;
@@ -35,6 +36,7 @@ type EventSession = {
 
 const props = defineProps<{
     organizer: { id: number; name: string };
+    can: { update: boolean };
     event: {
         id: number;
         name: string;
@@ -76,6 +78,23 @@ const formatPrice = (price: number) =>
                 <Badge :variant="eventStatusVariants[props.event.status]">
                     {{ eventStatusLabels[props.event.status] }}
                 </Badge>
+                <Button
+                    v-if="props.can.update"
+                    variant="outline"
+                    class="ml-auto"
+                    as-child
+                >
+                    <Link
+                        :href="
+                            edit({
+                                organizer: props.organizer,
+                                event: props.event,
+                            })
+                        "
+                    >
+                        編輯
+                    </Link>
+                </Button>
             </div>
             <p
                 v-if="props.event.description"

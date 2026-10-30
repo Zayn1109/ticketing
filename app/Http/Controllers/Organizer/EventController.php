@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Organizer;
 use App\Enums\EventStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organizer\StoreEventRequest;
+use App\Http\Requests\Organizer\UpdateEventRequest;
 use App\Models\Event;
 use App\Models\EventSession;
 use App\Models\Organizer;
@@ -64,6 +65,9 @@ class EventController extends Controller
 
         return Inertia::render('organizer/events/Show', [
             'organizer' => $organizer->only(['id', 'name']),
+            'can' => [
+                'update' => Gate::allows('event.manage', $organizer) && $event->isEditable(),
+            ],
             'event' => [
                 'id' => $event->id,
                 'name' => $event->name,
@@ -90,5 +94,26 @@ class EventController extends Controller
                 ]),
             ],
         ]);
+    }
+
+    public function edit(Organizer $organizer, Event $event): Response
+    {
+        abort_unless($event->isEditable(), 403);
+
+        return Inertia::render('organizer/events/Edit', [
+            'organizer' => $organizer->only(['id', 'name']),
+            'event' => $event->only(['id', 'name', 'description']),
+        ]);
+    }
+
+    public function update(UpdateEventRequest $request, Organizer $organizer, Event $event): RedirectResponse
+    {
+        abort_unless($event->isEditable(), 403);
+
+        $event->update($request->validated());
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => '活動已更新']);
+
+        return to_route('organizers.events.show', [$organizer, $event]);
     }
 }

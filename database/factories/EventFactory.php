@@ -36,4 +36,14 @@ class EventFactory extends Factory
             'published_at' => now(),
         ]);
     }
+
+    public function cancelled(): static
+    {
+        return $this->state(fn () => [
+            'status' => EventStatus::Cancelled,
+            'cancelled_at' => now(),
+            'cancelled_by' => User::factory(),
+            'cancellation_reason' => fake()->sentence(),
+        ]);
+    }
 }

@@ -26,6 +26,12 @@ Route::middleware(['auth', 'verified', 'organizer.member'])
         Route::get('events/{event}', [EventController::class, 'show'])
             ->name('events.show')
             ->can('event.viewAny', 'organizer');
+        Route::get('events/{event}/edit', [EventController::class, 'edit'])
+            ->name('events.edit')
+            ->can('event.manage', 'organizer');
+        Route::put('events/{event}', [EventController::class, 'update'])
+            ->name('events.update')
+            ->can('event.manage', 'organizer');
     });
 
 require __DIR__.'/settings.php';

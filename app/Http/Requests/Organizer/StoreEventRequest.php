@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests\Organizer;
 
+use App\Concerns\EventValidationRules;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEventRequest extends FormRequest
 {
+    use EventValidationRules;
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -14,9 +17,6 @@ class StoreEventRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:5000'],
-        ];
+        return $this->eventRules();
     }
 }

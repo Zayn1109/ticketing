@@ -59,6 +59,14 @@ class Event extends Model
     }
 
     /**
+     * 已取消的活動為終止狀態，名稱與說明不可再修改
+     */
+    public function isEditable(): bool
+    {
+        return $this->status !== EventStatus::Cancelled;
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
