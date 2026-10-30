@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EventSessionStatus;
 use App\Enums\EventStatus;
 use Database\Factories\EventFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -55,7 +56,7 @@ class Event extends Model
      */
     public function sessions(): HasMany
     {
-        return $this->hasMany(EventSession::class);
+        return $this->hasMany(EventSession::class)->chaperone();
     }
 
     /**
@@ -64,6 +65,18 @@ class Event extends Model
     public function isEditable(): bool
     {
         return $this->status !== EventStatus::Cancelled;
+    }
+
+    /**
+     * 以 scheduled 場次最晚的結束時間重算 last_session_ends_at（docs/state-machines.md ③）
+     */
+    public function syncLastSessionEndsAt(): void
+    {
+        $this->forceFill([
+            'last_session_ends_at' => $this->sessions()
+                ->where('status', EventSessionStatus::Scheduled)
+                ->max('ends_at'),
+        ])->save();
     }
 
     /**

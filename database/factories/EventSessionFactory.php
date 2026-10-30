@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Enums\EventSessionStatus;
 use App\Models\Event;
 use App\Models\EventSession;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
@@ -31,5 +32,15 @@ class EventSessionFactory extends Factory
             'capacity' => 1000,
             'status' => EventSessionStatus::Scheduled,
         ];
+    }
+
+    public function cancelled(): static
+    {
+        return $this->state(fn () => [
+            'status' => EventSessionStatus::Cancelled,
+            'cancelled_at' => now(),
+            'cancelled_by' => User::factory(),
+            'cancellation_reason' => fake()->sentence(),
+        ]);
     }
 }

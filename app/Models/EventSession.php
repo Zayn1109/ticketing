@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EventSessionStatus;
+use App\Enums\EventStatus;
 use Database\Factories\EventSessionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -49,6 +50,23 @@ class EventSession extends Model
     public function ticketTypes(): HasMany
     {
         return $this->hasMany(TicketType::class);
+    }
+
+    /**
+     * 已取消的場次、或所屬活動已取消時，不可再修改（docs/state-machines.md 後台操作規則）
+     */
+    public function isEditable(): bool
+    {
+        return $this->status === EventSessionStatus::Scheduled
+            && $this->event->isEditable();
+    }
+
+    /**
+     * 只有草稿活動的場次可以刪除；已發布活動的場次只能取消
+     */
+    public function isDeletable(): bool
+    {
+        return $this->event->status === EventStatus::Draft;
     }
 
     /**
