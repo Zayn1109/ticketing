@@ -12,6 +12,7 @@ import {
 import { eventStatusLabels, eventStatusVariants } from '@/lib/eventStatus';
 import type { EventStatus } from '@/lib/eventStatus';
 import { edit, index } from '@/routes/organizers/events';
+import { create as createSession } from '@/routes/organizers/events/sessions';
 
 type TicketType = {
     id: number;
@@ -36,7 +37,7 @@ type EventSession = {
 
 const props = defineProps<{
     organizer: { id: number; name: string };
-    can: { update: boolean };
+    can: { update: boolean; createSession: boolean };
     event: {
         id: number;
         name: string;
@@ -105,9 +106,28 @@ const formatPrice = (price: number) =>
         </header>
 
         <section class="flex flex-col gap-4">
-            <h2 class="text-lg font-medium">
-                場次（{{ props.event.sessions.length }}）
-            </h2>
+            <div class="flex items-center justify-between gap-4">
+                <h2 class="text-lg font-medium">
+                    場次（{{ props.event.sessions.length }}）
+                </h2>
+                <Button
+                    v-if="props.can.createSession"
+                    variant="outline"
+                    size="sm"
+                    as-child
+                >
+                    <Link
+                        :href="
+                            createSession({
+                                organizer: props.organizer,
+                                event: props.event,
+                            })
+                        "
+                    >
+                        新增場次
+                    </Link>
+                </Button>
+            </div>
 
             <p
                 v-if="props.event.sessions.length === 0"

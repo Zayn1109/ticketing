@@ -63,10 +63,13 @@ class EventController extends Controller
             'sessions' => fn ($query) => $query->orderBy('starts_at')->with('ticketTypes'),
         ]);
 
+        $canManageEvent = Gate::allows('event.manage', $organizer) && $event->isEditable();
+
         return Inertia::render('organizer/events/Show', [
             'organizer' => $organizer->only(['id', 'name']),
             'can' => [
-                'update' => Gate::allows('event.manage', $organizer) && $event->isEditable(),
+                'update' => $canManageEvent,
+                'createSession' => $canManageEvent,
             ],
             'event' => [
                 'id' => $event->id,

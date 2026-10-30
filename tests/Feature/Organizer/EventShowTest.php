@@ -42,7 +42,7 @@ class EventShowTest extends TestCase
             );
     }
 
-    public function test_show_allows_admin_to_update_editable_event(): void
+    public function test_show_allows_admin_to_manage_editable_event(): void
     {
         $admin = User::factory()->create();
         $organizer = Organizer::factory()->withMember($admin, OrganizerRole::Admin)->create();
@@ -50,10 +50,13 @@ class EventShowTest extends TestCase
 
         $this->actingAs($admin)
             ->get(route('organizers.events.show', [$organizer, $event]))
-            ->assertInertia(fn (Assert $page) => $page->where('can.update', true));
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('can.update', true)
+                ->where('can.createSession', true)
+            );
     }
 
-    public function test_show_denies_update_to_scanner(): void
+    public function test_show_denies_management_to_scanner(): void
     {
         $scanner = User::factory()->create();
         $organizer = Organizer::factory()->withMember($scanner, OrganizerRole::Scanner)->create();
@@ -61,10 +64,13 @@ class EventShowTest extends TestCase
 
         $this->actingAs($scanner)
             ->get(route('organizers.events.show', [$organizer, $event]))
-            ->assertInertia(fn (Assert $page) => $page->where('can.update', false));
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('can.update', false)
+                ->where('can.createSession', false)
+            );
     }
 
-    public function test_show_denies_update_of_cancelled_event_even_to_owner(): void
+    public function test_show_denies_management_of_cancelled_event_even_to_owner(): void
     {
         $owner = User::factory()->create();
         $organizer = Organizer::factory()->withMember($owner, OrganizerRole::Owner)->create();
@@ -72,6 +78,9 @@ class EventShowTest extends TestCase
 
         $this->actingAs($owner)
             ->get(route('organizers.events.show', [$organizer, $event]))
-            ->assertInertia(fn (Assert $page) => $page->where('can.update', false));
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('can.update', false)
+                ->where('can.createSession', false)
+            );
     }
 }
