@@ -4,6 +4,7 @@ namespace Tests\Feature\Organizer;
 
 use App\Enums\OrganizerRole;
 use App\Models\Event;
+use App\Models\EventSession;
 use App\Models\Organizer;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -105,6 +106,7 @@ class TenantIsolationTest extends TestCase
         $bindings = [
             'organizer' => $this->organizerA,
             'event' => $this->eventA,
+            'session' => EventSession::factory()->for($this->eventA)->create(),
         ];
 
         foreach ($routes as $route) {

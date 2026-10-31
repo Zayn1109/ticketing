@@ -39,6 +39,12 @@ Route::middleware(['auth', 'verified', 'organizer.member'])
         Route::post('events/{event}/sessions', [EventSessionController::class, 'store'])
             ->name('events.sessions.store')
             ->can('event.manage', 'organizer');
+        Route::get('events/{event}/sessions/{session}/edit', [EventSessionController::class, 'edit'])
+            ->name('events.sessions.edit')
+            ->can('event.manage', 'organizer');
+        Route::put('events/{event}/sessions/{session}', [EventSessionController::class, 'update'])
+            ->name('events.sessions.update')
+            ->can('event.manage', 'organizer');
     });
 
 require __DIR__.'/settings.php';
