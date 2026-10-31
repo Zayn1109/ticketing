@@ -4,13 +4,13 @@ namespace App\Models;
 
 use App\Enums\EventSessionStatus;
 use App\Enums\EventStatus;
+use Carbon\CarbonImmutable;
 use Database\Factories\EventSessionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -18,17 +18,17 @@ use Illuminate\Support\Carbon;
  * @property string|null $name
  * @property string $venue_name
  * @property string|null $venue_address
- * @property Carbon $starts_at
- * @property Carbon $ends_at
- * @property Carbon|null $doors_open_at
+ * @property CarbonImmutable $starts_at
+ * @property CarbonImmutable $ends_at
+ * @property CarbonImmutable|null $doors_open_at
  * @property string $timezone
  * @property int|null $capacity
  * @property EventSessionStatus $status
- * @property Carbon|null $cancelled_at
+ * @property CarbonImmutable|null $cancelled_at
  * @property int|null $cancelled_by
  * @property string|null $cancellation_reason
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  */
 #[Fillable(['name', 'venue_name', 'venue_address', 'starts_at', 'ends_at', 'doors_open_at', 'timezone', 'capacity'])]
 class EventSession extends Model

@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Enums\OrganizerRole;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -13,9 +13,9 @@ use Illuminate\Support\Carbon;
  * @property int $user_id
  * @property OrganizerRole $role
  * @property int|null $invited_by
- * @property Carbon $joined_at
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable $joined_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  */
 class OrganizerUser extends Pivot
 {

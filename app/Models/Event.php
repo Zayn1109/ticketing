@@ -4,13 +4,13 @@ namespace App\Models;
 
 use App\Enums\EventSessionStatus;
 use App\Enums\EventStatus;
+use Carbon\CarbonImmutable;
 use Database\Factories\EventFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -19,14 +19,14 @@ use Illuminate\Support\Carbon;
  * @property string|null $description
  * @property EventStatus $status
  * @property int $created_by
- * @property Carbon|null $published_at
+ * @property CarbonImmutable|null $published_at
  * @property int|null $published_by
- * @property Carbon|null $cancelled_at
+ * @property CarbonImmutable|null $cancelled_at
  * @property int|null $cancelled_by
  * @property string|null $cancellation_reason
- * @property Carbon|null $last_session_ends_at
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $last_session_ends_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property-read int $sessions_count
  */
 #[Fillable(['name', 'description'])]
