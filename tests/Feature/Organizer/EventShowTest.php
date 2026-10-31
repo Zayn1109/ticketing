@@ -56,6 +56,7 @@ class EventShowTest extends TestCase
                 ->where('can.update', true)
                 ->where('can.createSession', true)
                 ->where('event.sessions.0.can.update', true)
+                ->where('event.sessions.0.can.delete', true)
                 ->where('event.sessions.1.can.update', false)
             );
     }
@@ -73,6 +74,7 @@ class EventShowTest extends TestCase
                 ->where('can.update', false)
                 ->where('can.createSession', false)
                 ->where('event.sessions.0.can.update', false)
+                ->where('event.sessions.0.can.delete', false)
             );
     }
 
@@ -89,6 +91,22 @@ class EventShowTest extends TestCase
                 ->where('can.update', false)
                 ->where('can.createSession', false)
                 ->where('event.sessions.0.can.update', false)
+                ->where('event.sessions.0.can.delete', false)
+            );
+    }
+
+    public function test_show_allows_editing_but_not_deleting_sessions_of_published_event(): void
+    {
+        $admin = User::factory()->create();
+        $organizer = Organizer::factory()->withMember($admin, OrganizerRole::Admin)->create();
+        $event = Event::factory()->for($organizer)->published()->create();
+        EventSession::factory()->for($event)->create();
+
+        $this->actingAs($admin)
+            ->get(route('organizers.events.show', [$organizer, $event]))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('event.sessions.0.can.update', true)
+                ->where('event.sessions.0.can.delete', false)
             );
     }
 }

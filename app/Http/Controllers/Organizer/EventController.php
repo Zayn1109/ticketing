@@ -62,6 +62,8 @@ class EventController extends Controller
         $event->load([
             'sessions' => fn ($query) => $query->orderBy('starts_at')->with('ticketTypes'),
         ]);
+        // isEditable()／isDeletable() 會讀 $session->event，先接上已載入的活動，避免每個場次再查一次
+        $event->sessions->each(fn (EventSession $session) => $session->setRelation('event', $event));
 
         $canManage = Gate::allows('event.manage', $organizer);
         $canManageEvent = $canManage && $event->isEditable();
@@ -88,7 +90,8 @@ class EventController extends Controller
                     'timezone' => $session->timezone,
                     'status' => $session->status,
                     'can' => [
-                        'update' => $canManage && $session->setRelation('event', $event)->isEditable(),
+                        'update' => $canManage && $session->isEditable(),
+                        'delete' => $canManage && $session->isDeletable(),
                     ],
                     'ticket_types' => $session->ticketTypes->map(fn (TicketType $type) => [
                         'id' => $type->id,

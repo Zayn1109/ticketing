@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import DeleteEventSessionDialog from '@/components/DeleteEventSessionDialog.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -35,7 +36,7 @@ type EventSession = {
     ends_at: string;
     timezone: string;
     status: 'scheduled' | 'cancelled';
-    can: { update: boolean };
+    can: { update: boolean; delete: boolean };
     ticket_types: TicketType[];
 };
 
@@ -150,25 +151,36 @@ const formatPrice = (price: number) =>
                         >
                             已取消
                         </Badge>
-                        <Button
-                            v-if="session.can.update"
-                            variant="outline"
-                            size="sm"
-                            class="ml-auto"
-                            as-child
+                        <div
+                            v-if="session.can.update || session.can.delete"
+                            class="ml-auto flex gap-2"
                         >
-                            <Link
-                                :href="
-                                    editSession({
-                                        organizer: props.organizer,
-                                        event: props.event,
-                                        session,
-                                    })
-                                "
+                            <Button
+                                v-if="session.can.update"
+                                variant="outline"
+                                size="sm"
+                                as-child
                             >
-                                編輯
-                            </Link>
-                        </Button>
+                                <Link
+                                    :href="
+                                        editSession({
+                                            organizer: props.organizer,
+                                            event: props.event,
+                                            session,
+                                        })
+                                    "
+                                >
+                                    編輯
+                                </Link>
+                            </Button>
+                            <DeleteEventSessionDialog
+                                v-if="session.can.delete"
+                                :organizer="props.organizer"
+                                :event="props.event"
+                                :session="session"
+                                :ticket-type-count="session.ticket_types.length"
+                            />
+                        </div>
                     </CardTitle>
                     <CardDescription>
                         {{
