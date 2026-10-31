@@ -6,7 +6,6 @@ use App\Concerns\EventSessionValidationRules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Carbon;
 use Illuminate\Validation\Validator;
 
 class StoreEventSessionRequest extends FormRequest
@@ -41,32 +40,5 @@ class StoreEventSessionRequest extends FormRequest
                 }
             },
         ];
-    }
-
-    /**
-     * 驗證後的資料，時間欄位已依場次時區轉成 UTC
-     *
-     * @return array<string, mixed>
-     */
-    public function sessionAttributes(): array
-    {
-        $attributes = $this->validated();
-
-        foreach (['starts_at', 'ends_at', 'doors_open_at'] as $field) {
-            if (isset($attributes[$field])) {
-                $attributes[$field] = $this->toUtc($field);
-            }
-        }
-
-        return $attributes;
-    }
-
-    private function toUtc(string $field): Carbon
-    {
-        return Carbon::createFromFormat(
-            self::LOCAL_DATETIME_FORMAT,
-            $this->string($field)->toString(),
-            $this->string('timezone')->toString(),
-        )->utc();
     }
 }
