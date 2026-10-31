@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DateTimePicker from '@/components/DateTimePicker.vue';
 import InputError from '@/components/InputError.vue';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -98,38 +99,31 @@ const fieldClass =
         <div class="grid gap-4 sm:grid-cols-3">
             <div class="grid gap-2">
                 <Label for="doors_open_at">入場時間（選填）</Label>
-                <input
+                <DateTimePicker
                     id="doors_open_at"
                     name="doors_open_at"
-                    type="datetime-local"
-                    :value="props.session?.doors_open_at ?? ''"
-                    :class="fieldClass"
+                    :default-value="props.session?.doors_open_at"
+                    clearable
                 />
                 <InputError :message="props.errors.doors_open_at" />
             </div>
 
             <div class="grid gap-2">
                 <Label for="starts_at">開始時間</Label>
-                <input
+                <DateTimePicker
                     id="starts_at"
                     name="starts_at"
-                    type="datetime-local"
-                    :value="props.session?.starts_at ?? ''"
-                    :class="fieldClass"
-                    required
+                    :default-value="props.session?.starts_at"
                 />
                 <InputError :message="props.errors.starts_at" />
             </div>
 
             <div class="grid gap-2">
                 <Label for="ends_at">結束時間</Label>
-                <input
+                <DateTimePicker
                     id="ends_at"
                     name="ends_at"
-                    type="datetime-local"
-                    :value="props.session?.ends_at ?? ''"
-                    :class="fieldClass"
-                    required
+                    :default-value="props.session?.ends_at"
                 />
                 <InputError :message="props.errors.ends_at" />
             </div>
