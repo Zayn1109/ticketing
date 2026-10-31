@@ -12,7 +12,10 @@ import {
 import { eventStatusLabels, eventStatusVariants } from '@/lib/eventStatus';
 import type { EventStatus } from '@/lib/eventStatus';
 import { edit, index } from '@/routes/organizers/events';
-import { create as createSession } from '@/routes/organizers/events/sessions';
+import {
+    create as createSession,
+    edit as editSession,
+} from '@/routes/organizers/events/sessions';
 
 type TicketType = {
     id: number;
@@ -32,6 +35,7 @@ type EventSession = {
     ends_at: string;
     timezone: string;
     status: 'scheduled' | 'cancelled';
+    can: { update: boolean };
     ticket_types: TicketType[];
 };
 
@@ -146,6 +150,25 @@ const formatPrice = (price: number) =>
                         >
                             已取消
                         </Badge>
+                        <Button
+                            v-if="session.can.update"
+                            variant="outline"
+                            size="sm"
+                            class="ml-auto"
+                            as-child
+                        >
+                            <Link
+                                :href="
+                                    editSession({
+                                        organizer: props.organizer,
+                                        event: props.event,
+                                        session,
+                                    })
+                                "
+                            >
+                                編輯
+                            </Link>
+                        </Button>
                     </CardTitle>
                     <CardDescription>
                         {{
