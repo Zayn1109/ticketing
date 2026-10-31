@@ -45,6 +45,9 @@ Route::middleware(['auth', 'verified', 'organizer.member'])
         Route::put('events/{event}/sessions/{session}', [EventSessionController::class, 'update'])
             ->name('events.sessions.update')
             ->can('event.manage', 'organizer');
+        Route::delete('events/{event}/sessions/{session}', [EventSessionController::class, 'destroy'])
+            ->name('events.sessions.destroy')
+            ->can('event.manage', 'organizer');
     });
 
 require __DIR__.'/settings.php';

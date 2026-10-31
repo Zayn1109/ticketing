@@ -90,6 +90,25 @@ class EventSessionController extends Controller
         return to_route('organizers.events.show', [$organizer, $event]);
     }
 
+    public function destroy(Organizer $organizer, Event $event, EventSession $session): RedirectResponse
+    {
+        $session->setRelation('event', $event);
+
+        abort_unless($session->isDeletable(), 403);
+
+        DB::transaction(function () use ($event, $session): void {
+            // ticket_types 外鍵為 restrictOnDelete，要先刪；只有草稿能刪，票種不會有訂單
+            $session->ticketTypes()->delete();
+            $session->delete();
+
+            $event->syncLastSessionEndsAt();
+        });
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => '場次已刪除']);
+
+        return to_route('organizers.events.show', [$organizer, $event]);
+    }
+
     /**
      * 轉成 datetime-local 輸入框要的當地時間（YYYY-MM-DDTHH:mm）
      */
