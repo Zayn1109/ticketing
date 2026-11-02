@@ -101,6 +101,9 @@ class EventController extends Controller
                         'quota' => $type->quota,
                         'sale_start_at' => $type->sale_start_at->toIso8601String(),
                         'sale_end_at' => $type->sale_end_at->toIso8601String(),
+                        'can' => [
+                            'update' => $canManage && $session->isEditable(),
+                        ],
                     ]),
                 ]),
             ],

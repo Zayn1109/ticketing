@@ -47,8 +47,10 @@ class EventShowTest extends TestCase
         $admin = User::factory()->create();
         $organizer = Organizer::factory()->withMember($admin, OrganizerRole::Admin)->create();
         $event = Event::factory()->for($organizer)->create();
-        EventSession::factory()->for($event)->create(['starts_at' => now()->addDays(5)]);
-        EventSession::factory()->for($event)->cancelled()->create(['starts_at' => now()->addDays(10)]);
+        $session = EventSession::factory()->for($event)->create(['starts_at' => now()->addDays(5)]);
+        $cancelledSession = EventSession::factory()->for($event)->cancelled()->create(['starts_at' => now()->addDays(10)]);
+        TicketType::factory()->for($session)->create();
+        TicketType::factory()->for($cancelledSession)->create();
 
         $this->actingAs($admin)
             ->get(route('organizers.events.show', [$organizer, $event]))
@@ -60,6 +62,8 @@ class EventShowTest extends TestCase
                 ->where('event.sessions.0.can.createTicketType', true)
                 ->where('event.sessions.1.can.update', false)
                 ->where('event.sessions.1.can.createTicketType', false)
+                ->where('event.sessions.0.ticket_types.0.can.update', true)
+                ->where('event.sessions.1.ticket_types.0.can.update', false)
             );
     }
 
@@ -68,7 +72,7 @@ class EventShowTest extends TestCase
         $scanner = User::factory()->create();
         $organizer = Organizer::factory()->withMember($scanner, OrganizerRole::Scanner)->create();
         $event = Event::factory()->for($organizer)->create();
-        EventSession::factory()->for($event)->create();
+        TicketType::factory()->for(EventSession::factory()->for($event))->create();
 
         $this->actingAs($scanner)
             ->get(route('organizers.events.show', [$organizer, $event]))
@@ -78,6 +82,7 @@ class EventShowTest extends TestCase
                 ->where('event.sessions.0.can.update', false)
                 ->where('event.sessions.0.can.delete', false)
                 ->where('event.sessions.0.can.createTicketType', false)
+                ->where('event.sessions.0.ticket_types.0.can.update', false)
             );
     }
 
@@ -86,7 +91,7 @@ class EventShowTest extends TestCase
         $owner = User::factory()->create();
         $organizer = Organizer::factory()->withMember($owner, OrganizerRole::Owner)->create();
         $event = Event::factory()->for($organizer)->cancelled()->create();
-        EventSession::factory()->for($event)->create();
+        TicketType::factory()->for(EventSession::factory()->for($event))->create();
 
         $this->actingAs($owner)
             ->get(route('organizers.events.show', [$organizer, $event]))
@@ -96,6 +101,7 @@ class EventShowTest extends TestCase
                 ->where('event.sessions.0.can.update', false)
                 ->where('event.sessions.0.can.delete', false)
                 ->where('event.sessions.0.can.createTicketType', false)
+                ->where('event.sessions.0.ticket_types.0.can.update', false)
             );
     }
 

@@ -18,7 +18,10 @@ import {
     create as createSession,
     edit as editSession,
 } from '@/routes/organizers/events/sessions';
-import { create as createTicketType } from '@/routes/organizers/events/sessions/ticket-types';
+import {
+    create as createTicketType,
+    edit as editTicketType,
+} from '@/routes/organizers/events/sessions/ticket-types';
 
 type TicketType = {
     id: number;
@@ -27,6 +30,7 @@ type TicketType = {
     quota: number;
     sale_start_at: string;
     sale_end_at: string;
+    can: { update: boolean };
 };
 
 type EventSession = {
@@ -207,6 +211,7 @@ const formatPrice = (price: number) =>
                                 <th class="py-2 font-normal">價格</th>
                                 <th class="py-2 font-normal">數量</th>
                                 <th class="py-2 font-normal">販售期間</th>
+                                <th class="py-2"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -234,6 +239,22 @@ const formatPrice = (price: number) =>
                                             session.timezone,
                                         )
                                     }}
+                                </td>
+                                <td class="py-2 text-right">
+                                    <Link
+                                        v-if="type.can.update"
+                                        :href="
+                                            editTicketType({
+                                                organizer: props.organizer,
+                                                event: props.event,
+                                                session,
+                                                ticketType: type,
+                                            })
+                                        "
+                                        class="text-sm hover:underline"
+                                    >
+                                        編輯
+                                    </Link>
                                 </td>
                             </tr>
                         </tbody>

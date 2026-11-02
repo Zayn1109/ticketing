@@ -55,6 +55,12 @@ Route::middleware(['auth', 'verified', 'organizer.member'])
         Route::post('events/{event}/sessions/{session}/ticket-types', [TicketTypeController::class, 'store'])
             ->name('events.sessions.ticket-types.store')
             ->can('event.manage', 'organizer');
+        Route::get('events/{event}/sessions/{session}/ticket-types/{ticketType}/edit', [TicketTypeController::class, 'edit'])
+            ->name('events.sessions.ticket-types.edit')
+            ->can('event.manage', 'organizer');
+        Route::put('events/{event}/sessions/{session}/ticket-types/{ticketType}', [TicketTypeController::class, 'update'])
+            ->name('events.sessions.ticket-types.update')
+            ->can('event.manage', 'organizer');
     });
 
 require __DIR__.'/settings.php';
