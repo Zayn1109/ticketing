@@ -17,6 +17,7 @@ import {
     create as createSession,
     edit as editSession,
 } from '@/routes/organizers/events/sessions';
+import { create as createTicketType } from '@/routes/organizers/events/sessions/ticket-types';
 
 type TicketType = {
     id: number;
@@ -36,7 +37,7 @@ type EventSession = {
     ends_at: string;
     timezone: string;
     status: 'scheduled' | 'cancelled';
-    can: { update: boolean; delete: boolean };
+    can: { update: boolean; delete: boolean; createTicketType: boolean };
     ticket_types: TicketType[];
 };
 
@@ -197,7 +198,7 @@ const formatPrice = (price: number) =>
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent>
+                <CardContent class="flex flex-col gap-3">
                     <p
                         v-if="session.ticket_types.length === 0"
                         class="text-sm text-muted-foreground"
@@ -243,6 +244,22 @@ const formatPrice = (price: number) =>
                             </tr>
                         </tbody>
                     </table>
+
+                    <div v-if="session.can.createTicketType">
+                        <Button variant="outline" size="sm" as-child>
+                            <Link
+                                :href="
+                                    createTicketType({
+                                        organizer: props.organizer,
+                                        event: props.event,
+                                        session,
+                                    })
+                                "
+                            >
+                                新增票種
+                            </Link>
+                        </Button>
+                    </div>
                 </CardContent>
             </Card>
         </section>

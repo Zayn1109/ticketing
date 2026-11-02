@@ -92,6 +92,7 @@ class EventController extends Controller
                     'can' => [
                         'update' => $canManage && $session->isEditable(),
                         'delete' => $canManage && $session->isDeletable(),
+                        'createTicketType' => $canManage && $session->isEditable(),
                     ],
                     'ticket_types' => $session->ticketTypes->map(fn (TicketType $type) => [
                         'id' => $type->id,

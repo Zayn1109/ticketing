@@ -57,7 +57,9 @@ class EventShowTest extends TestCase
                 ->where('can.createSession', true)
                 ->where('event.sessions.0.can.update', true)
                 ->where('event.sessions.0.can.delete', true)
+                ->where('event.sessions.0.can.createTicketType', true)
                 ->where('event.sessions.1.can.update', false)
+                ->where('event.sessions.1.can.createTicketType', false)
             );
     }
 
@@ -75,6 +77,7 @@ class EventShowTest extends TestCase
                 ->where('can.createSession', false)
                 ->where('event.sessions.0.can.update', false)
                 ->where('event.sessions.0.can.delete', false)
+                ->where('event.sessions.0.can.createTicketType', false)
             );
     }
 
@@ -92,6 +95,7 @@ class EventShowTest extends TestCase
                 ->where('can.createSession', false)
                 ->where('event.sessions.0.can.update', false)
                 ->where('event.sessions.0.can.delete', false)
+                ->where('event.sessions.0.can.createTicketType', false)
             );
     }
 

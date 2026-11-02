@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Organizer\EventController;
 use App\Http\Controllers\Organizer\EventSessionController;
+use App\Http\Controllers\Organizer\TicketTypeController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'Welcome')->name('home');
@@ -47,6 +48,12 @@ Route::middleware(['auth', 'verified', 'organizer.member'])
             ->can('event.manage', 'organizer');
         Route::delete('events/{event}/sessions/{session}', [EventSessionController::class, 'destroy'])
             ->name('events.sessions.destroy')
+            ->can('event.manage', 'organizer');
+        Route::get('events/{event}/sessions/{session}/ticket-types/create', [TicketTypeController::class, 'create'])
+            ->name('events.sessions.ticket-types.create')
+            ->can('event.manage', 'organizer');
+        Route::post('events/{event}/sessions/{session}/ticket-types', [TicketTypeController::class, 'store'])
+            ->name('events.sessions.ticket-types.store')
             ->can('event.manage', 'organizer');
     });
 
