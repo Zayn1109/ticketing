@@ -29,4 +29,25 @@ class EventTest extends TestCase
 
         $this->assertSame($editable, $event->isEditable());
     }
+
+    /**
+     * @return array<string, array{EventStatus, bool}>
+     */
+    public static function publishableByStatus(): array
+    {
+        return [
+            '草稿可以發布' => [EventStatus::Draft, true],
+            '已發布不能重複發布' => [EventStatus::Published, false],
+            '已取消不能發布' => [EventStatus::Cancelled, false],
+        ];
+    }
+
+    #[DataProvider('publishableByStatus')]
+    public function test_is_publishable_depends_on_status(EventStatus $status, bool $publishable): void
+    {
+        $event = new Event;
+        $event->status = $status;
+
+        $this->assertSame($publishable, $event->isPublishable());
+    }
 }

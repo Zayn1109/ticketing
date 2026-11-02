@@ -68,6 +68,14 @@ class Event extends Model
     }
 
     /**
+     * 只有草稿能發布；已發布不能重複發布，已取消是終態（docs/state-machines.md）
+     */
+    public function isPublishable(): bool
+    {
+        return $this->status === EventStatus::Draft;
+    }
+
+    /**
      * 以 scheduled 場次最晚的結束時間重算 last_session_ends_at（docs/state-machines.md ③）
      */
     public function syncLastSessionEndsAt(): void
