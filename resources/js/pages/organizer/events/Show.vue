@@ -10,6 +10,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { formatDateTime } from '@/lib/dateTime';
 import { eventStatusLabels, eventStatusVariants } from '@/lib/eventStatus';
 import type { EventStatus } from '@/lib/eventStatus';
 import { edit, index } from '@/routes/organizers/events';
@@ -53,13 +54,6 @@ const props = defineProps<{
         sessions: EventSession[];
     };
 }>();
-
-const formatDateTime = (iso: string, timeZone: string) =>
-    new Intl.DateTimeFormat('zh-TW', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-        timeZone,
-    }).format(new Date(iso));
 
 const formatPrice = (price: number) =>
     new Intl.NumberFormat('zh-TW', {

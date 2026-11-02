@@ -3,6 +3,7 @@ import { Form, Head, Link } from '@inertiajs/vue3';
 import TicketTypeController from '@/actions/App/Http/Controllers/Organizer/TicketTypeController';
 import TicketTypeFormFields from '@/components/TicketTypeFormFields.vue';
 import { Button } from '@/components/ui/button';
+import { formatDateTime } from '@/lib/dateTime';
 import { show } from '@/routes/organizers/events';
 
 const props = defineProps<{
@@ -18,13 +19,6 @@ const props = defineProps<{
         capacity: number | null;
     };
 }>();
-
-const formatDateTime = (iso: string) =>
-    new Intl.DateTimeFormat('zh-TW', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-        timeZone: props.session.timezone,
-    }).format(new Date(iso));
 </script>
 
 <template>
@@ -41,8 +35,19 @@ const formatDateTime = (iso: string) =>
             <h1 class="text-2xl font-semibold">新增票種</h1>
             <p class="text-sm text-muted-foreground">
                 {{ props.session.name ?? props.session.venue_name }} ·
-                {{ formatDateTime(props.session.starts_at) }} –
-                {{ formatDateTime(props.session.ends_at) }}
+                {{
+                    formatDateTime(
+                        props.session.starts_at,
+                        props.session.timezone,
+                    )
+                }}
+                –
+                {{
+                    formatDateTime(
+                        props.session.ends_at,
+                        props.session.timezone,
+                    )
+                }}
                 （{{ props.session.timezone }}）
             </p>
         </header>
