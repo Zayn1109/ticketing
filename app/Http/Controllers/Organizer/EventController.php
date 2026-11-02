@@ -103,6 +103,7 @@ class EventController extends Controller
                         'sale_end_at' => $type->sale_end_at->toIso8601String(),
                         'can' => [
                             'update' => $canManage && $session->isEditable(),
+                            'delete' => $canManage && $session->isDeletable(),
                         ],
                     ]),
                 ]),

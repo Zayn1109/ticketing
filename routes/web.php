@@ -61,6 +61,9 @@ Route::middleware(['auth', 'verified', 'organizer.member'])
         Route::put('events/{event}/sessions/{session}/ticket-types/{ticketType}', [TicketTypeController::class, 'update'])
             ->name('events.sessions.ticket-types.update')
             ->can('event.manage', 'organizer');
+        Route::delete('events/{event}/sessions/{session}/ticket-types/{ticketType}', [TicketTypeController::class, 'destroy'])
+            ->name('events.sessions.ticket-types.destroy')
+            ->can('event.manage', 'organizer');
     });
 
 require __DIR__.'/settings.php';

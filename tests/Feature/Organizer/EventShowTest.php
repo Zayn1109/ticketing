@@ -63,6 +63,7 @@ class EventShowTest extends TestCase
                 ->where('event.sessions.1.can.update', false)
                 ->where('event.sessions.1.can.createTicketType', false)
                 ->where('event.sessions.0.ticket_types.0.can.update', true)
+                ->where('event.sessions.0.ticket_types.0.can.delete', true)
                 ->where('event.sessions.1.ticket_types.0.can.update', false)
             );
     }
@@ -83,6 +84,7 @@ class EventShowTest extends TestCase
                 ->where('event.sessions.0.can.delete', false)
                 ->where('event.sessions.0.can.createTicketType', false)
                 ->where('event.sessions.0.ticket_types.0.can.update', false)
+                ->where('event.sessions.0.ticket_types.0.can.delete', false)
             );
     }
 
@@ -102,6 +104,7 @@ class EventShowTest extends TestCase
                 ->where('event.sessions.0.can.delete', false)
                 ->where('event.sessions.0.can.createTicketType', false)
                 ->where('event.sessions.0.ticket_types.0.can.update', false)
+                ->where('event.sessions.0.ticket_types.0.can.delete', false)
             );
     }
 
@@ -110,13 +113,15 @@ class EventShowTest extends TestCase
         $admin = User::factory()->create();
         $organizer = Organizer::factory()->withMember($admin, OrganizerRole::Admin)->create();
         $event = Event::factory()->for($organizer)->published()->create();
-        EventSession::factory()->for($event)->create();
+        TicketType::factory()->for(EventSession::factory()->for($event))->create();
 
         $this->actingAs($admin)
             ->get(route('organizers.events.show', [$organizer, $event]))
             ->assertInertia(fn (Assert $page) => $page
                 ->where('event.sessions.0.can.update', true)
                 ->where('event.sessions.0.can.delete', false)
+                ->where('event.sessions.0.ticket_types.0.can.update', true)
+                ->where('event.sessions.0.ticket_types.0.can.delete', false)
             );
     }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import DeleteEventSessionDialog from '@/components/DeleteEventSessionDialog.vue';
+import DeleteTicketTypeDialog from '@/components/DeleteTicketTypeDialog.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -30,7 +31,7 @@ type TicketType = {
     quota: number;
     sale_start_at: string;
     sale_end_at: string;
-    can: { update: boolean };
+    can: { update: boolean; delete: boolean };
 };
 
 type EventSession = {
@@ -240,21 +241,30 @@ const formatPrice = (price: number) =>
                                         )
                                     }}
                                 </td>
-                                <td class="py-2 text-right">
-                                    <Link
-                                        v-if="type.can.update"
-                                        :href="
-                                            editTicketType({
-                                                organizer: props.organizer,
-                                                event: props.event,
-                                                session,
-                                                ticketType: type,
-                                            })
-                                        "
-                                        class="text-sm hover:underline"
-                                    >
-                                        編輯
-                                    </Link>
+                                <td class="py-2">
+                                    <div class="flex justify-end gap-3">
+                                        <Link
+                                            v-if="type.can.update"
+                                            :href="
+                                                editTicketType({
+                                                    organizer: props.organizer,
+                                                    event: props.event,
+                                                    session,
+                                                    ticketType: type,
+                                                })
+                                            "
+                                            class="text-sm hover:underline"
+                                        >
+                                            編輯
+                                        </Link>
+                                        <DeleteTicketTypeDialog
+                                            v-if="type.can.delete"
+                                            :organizer="props.organizer"
+                                            :event="props.event"
+                                            :session="session"
+                                            :ticket-type="type"
+                                        />
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>

@@ -88,6 +88,20 @@ class TicketTypeController extends Controller
         return to_route('organizers.events.show', [$organizer, $event]);
     }
 
+    public function destroy(Organizer $organizer, Event $event, EventSession $session, TicketType $ticketType): RedirectResponse
+    {
+        $session->setRelation('event', $event);
+        $ticketType->setRelation('eventSession', $session);
+
+        abort_unless($ticketType->isDeletable(), 403);
+
+        $ticketType->delete();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => '票種已刪除']);
+
+        return to_route('organizers.events.show', [$organizer, $event]);
+    }
+
     /**
      * 表單頁顯示用的場次資訊
      *
