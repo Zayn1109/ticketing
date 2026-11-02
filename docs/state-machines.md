@@ -393,10 +393,15 @@ stateDiagram-v2
 | 修改場次（含改期）   | 場次 `scheduled` 且活動未取消     | 改期是 UPDATE，不是狀態轉移                        |
 | 刪除場次             | 活動為 `draft`                    | 與「草稿可直接刪除」同理：沒人看過、沒有訂單指向它 |
 | 移除已發布活動的場次 | 只能取消（`event.cancel`，owner） | 使用者可能已看到或已購買                           |
+| 新增票種             | 場次 `scheduled` 且活動未取消     | 票種跟著場次，沒有自己的狀態                       |
+| 修改票種             | 場次 `scheduled` 且活動未取消     | 同上                                               |
+| 刪除票種             | 活動為 `draft`                    | 與刪除場次同理；已發布後停售改 `sale_end_at`       |
 
 - 刪除場次時，在同一交易內先刪除其票種（`ticket_types` 外鍵為 `restrictOnDelete`）。只有草稿能刪，票種不可能有訂單，所以安全。
 - 狀態判斷寫在 model（`EventSession::isEditable()`、`isDeletable()`），角色判斷留在 Gate，見 `permissions.md` 規則 6。
+- 票種的狀態判斷委派給場次（`TicketType::isEditable()`、`isDeletable()`），規則只寫在 `EventSession` 一處。
 - **擴充點**：W9 有訂單之後，已售出場次的改期要通知購票者（`events.md`「活動已改期」）。
+- **擴充點**：W9 有訂單之後，已發布活動的票種改為「沒有訂單明細才可刪除」（`order_items` 外鍵同樣 restrict）。
 
 **`last_session_ends_at` 的維護**：只計算 `scheduled` 場次的 `max(ends_at)`，已取消的場次不算，否則只剩已取消場次的活動會被當成「尚未結束」。新增、修改、刪除、取消場次時，由 Controller 在同一交易內明確呼叫 `Event::syncLastSessionEndsAt()`。
 

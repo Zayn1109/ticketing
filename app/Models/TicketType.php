@@ -36,6 +36,22 @@ class TicketType extends Model
     }
 
     /**
+     * 票種跟著場次：場次可修改時才能新增／修改票種（docs/state-machines.md 後台操作規則）
+     */
+    public function isEditable(): bool
+    {
+        return $this->eventSession->isEditable();
+    }
+
+    /**
+     * 只有草稿活動的票種可以刪除；W9 有訂單後改為「沒有訂單明細」才能刪
+     */
+    public function isDeletable(): bool
+    {
+        return $this->eventSession->isDeletable();
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
